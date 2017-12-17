@@ -3,13 +3,23 @@
 an ES6 javascript website that gives you a page with graphical interface
 capable of showing you a real-live git repository and git-flow engine, simulated using
 
-git.add(<filename> or * for all[default] or <file id>) for git add
-git.remove(<filename> or <file id>) for git remove
-git.commit(<message>) for git commit -m <message>
+git.add(filename or * for all[default] or file id) for git add
+
+git.remove(filename or file id) for git remove
+
+git.commit(message) for git commit -m message
+
 git.push() for git push
-git.clone(<repo-link>) for git clone <repo-link>
+
+git.clone(repo-link) for git clone repo-link
+
 git.fetch() for git fetch
+
 git.merge() for git merge
+
+  
+
+
   
 
 # To install
