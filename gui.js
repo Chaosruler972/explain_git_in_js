@@ -1,8 +1,8 @@
+const repo_link = '';
+
 
 window.onload = () =>
 {
-    let repo_link = 'https://github.com/meitarsh/m.s-aluminium-manager-app';
-    git.clone(repo_link);
     github.init_canvas();
     github.draw();
 };
@@ -121,13 +121,13 @@ const github = (function () {
 
     const draw_small_box = () =>
     {
-        draw_arr(git.get_working_directory(), 0, l1toString);
-        draw_arr(git.get_staging_area(), 1, l1toString);
-        draw_arr(git.get_local_repository(), 2, l2toString);
-        draw_arr(git.get_remote_repository(), 3, l2toString);
+        draw_arr(git.get_working_directory(), 0, l1toString,false);
+        draw_arr(git.get_staging_area(), 1, l1toString,false);
+        draw_arr(git.get_local_repository(), 2, l2toString,true);
+        draw_arr(git.get_remote_repository(), 3, l2toString,true);
     };
 
-    const draw_arr = (arr, index, toStringfunc) =>
+    const draw_arr = (arr, index, toStringfunc,advanced_flag) =>
     {
         ctx.beginPath();
         ctx.strokeStyle = font_color;
@@ -143,7 +143,7 @@ const github = (function () {
                 const message = toStringfunc(value);
                 const id = arr.indexOf(value);
                 const id_str = "\n ID: " + id;
-                regions.push(get_region(x-width,y-width-20,x+big_box_width-width,y+40-width-margin,id_str+print_everything(value)));
+                regions.push(get_region(x-width,y-width-20,x+big_box_width-width,y+40-width-margin,id_str+print_everything(value,advanced_flag)));
                 ctx.strokeText(id + ": " +message, x, y);
                 moving_y_index++;
             }
@@ -156,13 +156,13 @@ const github = (function () {
 
     const l1toString = (value) => "Name: " + value.name;//+ " \nSize: " + value.size;
     const l2toString = (value) => "Name: " + value.name;//+ " \nSize: " + value.size + " \nMessage: " + value.message;
-    const print_everything = (value) =>
+    const print_everything = (value,advanced_flag) =>
     {
         let str = "";
         str+="\n Name: " + value.name;
         str+="\n Path: " + value.path;
         str+="\n Size: " + value.size;
-        if(value.message)
+        if(advanced_flag)
             str+="\n Message: " + value.message;
         return str;
     };

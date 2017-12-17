@@ -21,6 +21,10 @@
        */
       git.add = (filename = '*') =>
       {
+         if(typeof filename === 'number')
+         {
+            filename = git.working_directory[parseInt(filename)].name;
+         }
          if(filename === '*')
          {
             git.working_directory.forEach(value =>
@@ -50,6 +54,34 @@
              }
          }
       };
+      /*
+        git remove simulator, similar to unstage
+       */
+       git.remove = (filename) =>
+       {
+           if(typeof filename === 'number')
+           {
+               filename = git.staging_area[parseInt(filename)].name;
+           }
+           let element = git.staging_area.find((item,index,arr)=>
+           {
+               if(item.name === filename)
+                   return true;
+               else
+                   return false;
+           },filename);
+
+           if(element)
+           {
+               git.working_directory.push(element);
+               git.staging_area = git.staging_area.filter(value => value !== element);
+           }
+           else
+           {
+               alert("File not found at all");
+           }
+       };
+
 
        /*
            git add filename...after finding file object
@@ -156,16 +188,127 @@
       };
 
      /*
-        git clone simulator, from the real thing!
+        connects simulator to the real thing!
       */
-      git.clone = (link) =>
+      git.connect = (link) =>
       {
           git.request_repository_files(link);
       };
 
+
       /*
-            builds a request link to get JSON from git API containing repo files
+        git clone simulator
        */
+
+      git.clone = () =>
+      {
+          git.remote_repository.forEach(value => {
+                git.clone_file(value);
+          });
+      };
+
+    /*
+      git clone file -> copies to working directory
+     */
+    git.clone_file = (file) =>
+    {
+        let element = git.working_directory.find((item,index,arr)=>
+        {
+            if(item.name === file.name)
+                return true;
+            else
+                return false;
+        },file);
+
+        if(element)
+        {
+            if(file.name === element.name && file.path === element.path)
+                console.log("Conflict!")
+            element.path = file.path;
+            element.size = file.size;
+            element.message = undefined;
+        }
+        else
+        {
+            git.working_directory.push(file);
+        }
+    };
+
+    /*
+       git fetch simulator
+      */
+
+    git.fetch = () =>
+    {
+        git.remote_repository.forEach(value => {
+            git.fetch_file(value);
+        });
+    };
+    /*
+        git fetch file .. copies from remote to local
+     */
+    git.fetch_file = (file) =>
+    {
+        let element = git.local_repository.find((item,index,arr)=>
+        {
+            if(item.name === file.name)
+                return true;
+            else
+                return false;
+        },file);
+
+        if(element)
+        {
+            if(file.name === element.name && file.path === element.path)
+                console.log("Conflict!");
+            element.path = file.path;
+            element.size = file.size;
+            element.message = file.message;
+        }
+        else
+        {
+            git.local_repository.push(file);
+        }
+    };
+
+
+    /*
+        git merge
+     */
+    git.merge = () =>
+    {
+        git.local_repository.forEach(value => {
+            git.merge_file(value);
+        });
+        git.local_repository = [];
+    };
+    /*
+       git fetch file .. copies from remote to local
+    */
+    git.merge_file = (file) =>
+    {
+        let element = git.working_directory.find((item,index,arr)=>
+        {
+            if(item.name === file.name)
+                return true;
+            else
+                return false;
+        },file);
+
+        if(element)
+        {
+            element.path = file.path;
+            element.size = file.size;
+            element.message = undefined;
+        }
+        else
+        {
+            git.working_directory.push(file);
+        }
+    };
+    /*
+          builds a request link to get JSON from git API containing repo files
+     */
       git.request_repository_files = (link) =>
       {
           if(!git.is_valid_url(link))
@@ -221,8 +364,6 @@
        */
       git.parse_file = (file,user,repo) =>
       {
-          let objfile = git.get_file(file.name,file.path,file.size);
-          git.working_directory.push(objfile);
           let repo_file = git.get_file(file.name,file.path,file.size);
           repo_file.message = "Previous commit message";
           git.remote_repository.push(repo_file);
