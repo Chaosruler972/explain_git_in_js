@@ -32,7 +32,7 @@ const github = (function () {
      */
     let colors = {};
     colors[0] = 'green'; // working directory
-    colors[1] = 'blue'; // staging area
+    colors[1] = 'orange'; // staging area
     colors[2] = 'yellow'; // local repository
     colors[3] = 'white'; // remote repository
 
