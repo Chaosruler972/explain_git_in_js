@@ -1,4 +1,4 @@
-const repo_link = '';
+const link = '';
 
 
 window.onload = () =>
@@ -26,6 +26,7 @@ const github = (function () {
 
     const margin = 10;
     const small_box_height = 100;
+	const mid_screen = 70;
     /*
         tile colors
      */
@@ -35,6 +36,12 @@ const github = (function () {
     colors[2] = 'yellow'; // local repository
     colors[3] = 'white'; // remote repository
 
+	
+	let texts = {};
+	texts[0] = 'Working Directory';
+	texts[1] = 'Staging Area';
+	texts[2] = 'Local Repository';
+	texts[3] = 'Remote Repository';
     const fontBase = 500, fontSize = 13;
 
     const font_ratio = fontSize / fontBase;
@@ -85,6 +92,7 @@ const github = (function () {
             clear_screen();
             draw_big_box();
             draw_small_box();
+			draw_texts();
             then = now - (delta & request_sync_time_for_fps); // this time fo syncing to be the difference
             // between now and the "how much I approached to the next" render time
             // e.g:
@@ -152,8 +160,23 @@ const github = (function () {
         ctx.closePath();
     };
 
-
-
+	const draw_texts = () =>
+	{
+		ctx.beginPath();
+		ctx.strokeStyle = font_color;
+		ctx.font = font;
+		const width = parseInt(line_width);
+		let i;
+		for(i=0; i<4; i++)
+		{
+			const x = (i*big_box_width)+width;
+			const y = mid_screen;
+			ctx.strokeText(texts[i],x,y);
+		}
+		ctx.stroke();
+		ctx.closePath();
+	};
+	
     const l1toString = (value) => "Name: " + value.name;//+ " \nSize: " + value.size;
     const l2toString = (value) => "Name: " + value.name;//+ " \nSize: " + value.size + " \nMessage: " + value.message;
     const print_everything = (value,advanced_flag) =>
